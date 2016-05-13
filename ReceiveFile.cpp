@@ -111,7 +111,7 @@ void ReceiveFile::getFile()
 		exit(-1);
 	}
 
-	// Receive Data & Write Data to file
+	// Receive Data from server & Write Data to file
 	while((rlen = read(client_socket, buffer, strlen(buffer))) > 0)
 	{
 		if((wlen = write(recv_fd, buffer, rlen)) != rlen)
@@ -131,5 +131,6 @@ void ReceiveFile::getFile()
 	delete[] filename;
 	close(recv_fd);
 	close(client_socket);
+	// Wait for another file
 	waitClient();
 }
