@@ -16,7 +16,7 @@ SendMessageToMulticast::SendMessageToMulticast(int _pipe, char* _ip, char* _port
 		std::cerr << "** Error : cannot create send socket !\n";
 		exit(-1);
 	}
-	std::cout << "** Error : send Socket Successfully Set\n";
+	std::cout << "Send Socket Successfully Set\n";
 }
 
 SendMessageToMulticast::~SendMessageToMulticast()
