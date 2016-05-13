@@ -1,3 +1,8 @@
+/**********************************
+ * Author : Jeong minhyeok (정민혁)
+ * Date : 2016-05-14
+ **********************************/
+
 #include "Common.h"
 #include "GetMessageFromInput.h"
 #include "SendMessageToMulticast.h"
@@ -27,44 +32,62 @@ int main(int argc, char** argv)
 		std::cerr << "** Error : fork error!\n";
 		exit(-1);
 	}
+
+	// Create pipe for IPC
+	// Input Process <-> Send Process
+	// Output Process <-> Receive Process
 	if(pipe(pipes) == -1)
 	{
 		std::cerr << "** Error : pipe error!\n";
 		exit(-1);
 	}
 
+	// Child Process (Output, Receive)
 	if(pid == 0)
 	{
+		// Create Process
+		// Output Process & Receive Process
 		if((pid = fork()) < 0)
 		{
 			std::cerr << "fork error!";
 			exit(-1);
 		}
+		// Child of Child Process (Output)
 		if(pid == 0)
 		{
+			// Give read end pipe (from Receive Process)
 			PutMessageToOutput output(pipes[0]);
 			output.run();
 		}
+		// Parent of Child Process (Receive)
 		else
 		{
-			ReceiveMessageFromMulticast recv_from(pipes[1], argv[1], argv[2]);
-			recv_from.run();
+			// Give write end pipe (to Output Proces)
+			ReceiveMessageFromMulticast receive_from(pipes[1], argv[1], argv[2]);
+			receive_from.run();
 		}
 	}
+	// Parent Process (Input, Send)
 	else
 	{
+		// Create Process
+		// Input Process & Send Process
 		if((pid = fork()) < 0)
 		{
 			std::cerr << "fork error!";
 			exit(-1);
 		}
+		// Child of Parent Process (Input)
 		if(pid == 0)
 		{
+			// Give write end pipe (to Send Process) and username
 			GetMessageFromInput input(pipes[1], argv[3]);
 			input.run();
 		}
+		// Parent of Parent Process (Send)
 		else
 		{
+			// Give read end pipe (from Input Process), IP and Port
 			SendMessageToMulticast send_to(pipes[0], argv[1], argv[2]);
 			send_to.run();
 		}

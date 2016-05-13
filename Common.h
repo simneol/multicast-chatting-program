@@ -1,3 +1,8 @@
+/**********************************
+ * Author : Jeong minhyeok (정민혁)
+ * Date : 2016-05-14
+ **********************************/
+
 #ifndef CHATTING_PROG_COMMON_H
 #define CHATTING_PROG_COMMON_H
 
