@@ -70,7 +70,6 @@ void ReceiveFile::waitClient()
 	std::cout << "> If you want receive this file, type \"/yes\"" << std::endl;
 	do
 	{
-		sleep(1);
 		// check ok sign from input(user) every 1 sec
 		if((rlen = read(recv_pipe, buffer, BUF_SIZE)) < 0)
 		{
@@ -103,9 +102,9 @@ void ReceiveFile::getFile()
 		std::cerr << "** Error : write(ok sign to client) error\n";
 		exit(-1);
 	}
-
+	sleep(1);
 	// Receive Data from server & Write Data to file
-	while((rlen = read(client_socket, buffer, strlen(buffer))) > 0)
+	while((rlen = read(client_socket, buffer, BUF_SIZE)) > 0)
 	{
 		if((wlen = write(recv_fd, buffer, rlen)) != rlen)
 		{
