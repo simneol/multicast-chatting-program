@@ -36,6 +36,7 @@ void ReceiveFile::run()
 	if(bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
 	{
 		std::cerr << "** Error : Cannot bind file server socket\n";
+		std::cerr << "**         You cannot receive file from another user\n";
 		std::cerr << "** (Maybe other process already use port number 20000)\n";
 		exit(-1);
 	}
@@ -44,8 +45,6 @@ void ReceiveFile::run()
 		std::cerr << "** Error : cannot listen\n";
 		exit(-1);
 	}
-	std::cout << "File Transfer Receive Socket Successfully binded" << std::endl;
-	std::cout << "Now you can receive file from another user" << std::endl;
 	waitClient();
 }
 

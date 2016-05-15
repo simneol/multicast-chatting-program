@@ -10,6 +10,7 @@ class SendMessageToMulticast
 public:
 	SendMessageToMulticast(int, char*, char*);
 	~SendMessageToMulticast();
+	void send_goodbye(char*);
 	void run();
 private:
 	struct sockaddr_in multicast_group;

@@ -39,7 +39,6 @@ ReceiveMessageFromMulticast::ReceiveMessageFromMulticast(int _pipe, char* _ip, c
 		std::cerr << "** Error : cannot bind receive socket\n";
 		exit(-1);
 	}
-	std::cout << "Receive Socket Successfully Set\n";
 }
 
 ReceiveMessageFromMulticast::~ReceiveMessageFromMulticast()

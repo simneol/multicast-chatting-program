@@ -9,6 +9,20 @@
 #include "ReceiveMessageFromMulticast.h"
 #include "PutMessageToOutput.h"
 
+GetMessageFromInput *input;
+SendMessageToMulticast *send_to;
+ReceiveMessageFromMulticast *receive_from;
+PutMessageToOutput *output;
+
+char *username;
+
+void sigint_handler(int signo)
+{
+	//std::cout << "This program will be shutdown..." << std::endl;
+	send_to->send_goodbye(username);
+	exit(-1);
+}
+
 int main(int argc, char** argv)
 {
 	if(argc != 4)
@@ -18,11 +32,12 @@ int main(int argc, char** argv)
 	}
 	int pipes[2];
 	pid_t pid;
-	std::cout << "=====================================================" << std::endl;
-	std::cout << "Enjoy multicast chat program !" << std::endl;
-	std::cout << "You can send message by press enter !" << std::endl;
-	std::cout << "And You can send file by using below command " << std::endl;
+	
+	std::cout << "===========Enjoy multicast chat program !============" << std::endl;
+	std::cout << "1. You can send message by press enter !" << std::endl;
+	std::cout << "2. You can send file by using below command " << std::endl;
 	std::cout << " * Send file : type \"/sendfile <FilePath> <IP>\"" << std::endl;
+	std::cout << "3. You can exit chatting to press Ctrl + C" << std::endl;
 	std::cout << "=====================================================" << std::endl;
 
 	// Create process for divide into
@@ -56,15 +71,15 @@ int main(int argc, char** argv)
 		if(pid == 0)
 		{
 			// Give read end pipe (from Receive Process)
-			PutMessageToOutput output(pipes[0]);
-			output.run();
+			output = new PutMessageToOutput(pipes[0]);
+			output->run();
 		}
 		// Parent of Child Process (Receive)
 		else
 		{
 			// Give write end pipe (to Output Proces)
-			ReceiveMessageFromMulticast receive_from(pipes[1], argv[1], argv[2]);
-			receive_from.run();
+			receive_from = new ReceiveMessageFromMulticast(pipes[1], argv[1], argv[2]);
+			receive_from->run();
 		}
 	}
 	// Parent Process (Input, Send)
@@ -81,15 +96,18 @@ int main(int argc, char** argv)
 		if(pid == 0)
 		{
 			// Give write end pipe (to Send Process) and username
-			GetMessageFromInput input(pipes[1], argv[3]);
-			input.run();
+			input =  new GetMessageFromInput(pipes[1], argv[3]);
+			input->run();
 		}
 		// Parent of Parent Process (Send)
 		else
 		{
+			username = new char[strlen(argv[3])];
+			strcpy(username, argv[3]);
+			signal(SIGINT, sigint_handler);
 			// Give read end pipe (from Input Process), IP and Port
-			SendMessageToMulticast send_to(pipes[0], argv[1], argv[2]);
-			send_to.run();
+			send_to = new SendMessageToMulticast(pipes[0], argv[1], argv[2]);
+			send_to->run();
 		}
 	}
 	return 0;

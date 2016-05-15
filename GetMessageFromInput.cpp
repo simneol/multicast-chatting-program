@@ -8,8 +8,17 @@
 // Constructor : write end pipe (to Send Process)
 GetMessageFromInput::GetMessageFromInput(int _pipe, char* _username) : send_pipe(_pipe)
 {
+	char *hello_msg;
 	this->username = new char[strlen(_username)];
 	strcpy(this->username, _username);
+	hello_msg = new char[strlen(username) + 13];
+	sprintf(hello_msg, " [Info] %s has joined.\n", username);
+	if(write(send_pipe, hello_msg, strlen(hello_msg)) < 0)
+	{
+			std::cerr << "** Error : cannot write HELLO MESSAGE to send process\n";
+			exit(-1);
+	}
+	delete[] hello_msg;
 }
 
 GetMessageFromInput::~GetMessageFromInput()

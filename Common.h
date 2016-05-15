@@ -8,11 +8,11 @@
 
 // headers & macros
 #include <iostream>
-#include <string>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>

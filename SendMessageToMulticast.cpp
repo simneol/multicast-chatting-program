@@ -16,12 +16,22 @@ SendMessageToMulticast::SendMessageToMulticast(int _pipe, char* _ip, char* _port
 		std::cerr << "** Error : cannot create send socket !\n";
 		exit(-1);
 	}
-	std::cout << "Send Socket Successfully Set\n";
 }
 
 SendMessageToMulticast::~SendMessageToMulticast()
 {
 	close(send_socket);
+}
+
+void SendMessageToMulticast::send_goodbye(char* username)
+{
+	char* goodbye_msg = new char[strlen(username) + 11];
+	sprintf(goodbye_msg, " [Info] %s has left.\n", username);
+	if(sendto(send_socket, goodbye_msg, strlen(goodbye_msg), 0, (struct sockaddr*)&multicast_group, sizeof(multicast_group)) < strlen(goodbye_msg))
+	{
+		std::cerr << "** Error : cannot send GOODBYE MSG\n";
+		exit(-1);
+	}
 }
 
 // main function
