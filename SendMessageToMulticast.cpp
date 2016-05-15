@@ -7,6 +7,7 @@
 
 SendMessageToMulticast::SendMessageToMulticast(int _pipe, char* _ip, char* _port) : recv_pipe(_pipe)
 {
+	// Set Multicast group info
 	memset(&multicast_group, 0, sizeof(multicast_group));
 	multicast_group.sin_family = AF_INET;
 	multicast_group.sin_port = htons(atoi(_port));
@@ -23,6 +24,7 @@ SendMessageToMulticast::~SendMessageToMulticast()
 	close(send_socket);
 }
 
+// Send Goodbye Message when program exit
 void SendMessageToMulticast::send_goodbye(char* username)
 {
 	char* goodbye_msg = new char[strlen(username) + 11];

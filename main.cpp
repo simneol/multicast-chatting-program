@@ -16,9 +16,9 @@ PutMessageToOutput *output;
 
 char *username;
 
+// If user press Ctrl+C, this function invoked
 void sigint_handler(int signo)
 {
-	//std::cout << "This program will be shutdown..." << std::endl;
 	send_to->send_goodbye(username);
 	exit(-1);
 }
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	}
 	int pipes[2];
 	pid_t pid;
-	
+
 	std::cout << "===========Enjoy multicast chat program !============" << std::endl;
 	std::cout << "1. You can send message by press enter !" << std::endl;
 	std::cout << "2. You can send file by using below command " << std::endl;
@@ -103,7 +103,9 @@ int main(int argc, char** argv)
 		else
 		{
 			username = new char[strlen(argv[3])];
+			// Save username to global variable
 			strcpy(username, argv[3]);
+			// Matching signal & signal handler
 			signal(SIGINT, sigint_handler);
 			// Give read end pipe (from Input Process), IP and Port
 			send_to = new SendMessageToMulticast(pipes[0], argv[1], argv[2]);

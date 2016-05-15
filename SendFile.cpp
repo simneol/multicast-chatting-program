@@ -46,7 +46,7 @@ void SendFile::run()
 		exit(-1);
 	}
 
-	// create socket
+	// Create TCP socket
 	if((client_socket = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		std::cerr << "** Error : cannot create file client socket\n";
@@ -56,11 +56,13 @@ void SendFile::run()
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(FILE_TRANSFER_PORT);
 	server_addr.sin_addr.s_addr = inet_addr(ip);
+	// Connect to server
 	if(connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
 	{
 		std::cerr << "** Error : cannot connect to server\n";
 		exit(-1);
 	}
+	// Send fileinfo
 	if((wlen = write(client_socket, fileInfo, strlen(fileInfo))) < 0)
 	{
 		std::cerr << "** Error : write(fileInfo to server) error\n";
@@ -69,6 +71,7 @@ void SendFile::run()
 	std::cout << "> File transfer request has been sent" << std::endl;
 	do
 	{
+		// Check ok sign from server
 		sleep(1);
 		if((rlen = read(client_socket, buffer, BUF_SIZE)) < 0)
 		{
@@ -76,6 +79,7 @@ void SendFile::run()
 			exit(-1);
 		}
 	}while(rlen == 0);
+	// ok sign equal to receiver's name
 	recv_name = new char[rlen];
 	strncpy(recv_name, buffer, rlen);
 	std::cout << "> " << recv_name << " accept your file transfer !" << std::endl;

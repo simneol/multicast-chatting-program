@@ -21,12 +21,6 @@ void ReceiveFile::run()
 		std::cerr << "** Error : cannot create file server socket\n";
 		exit(-1);
 	}
-//	option = 1;
-//	if(setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0)
-//	{
-//		std::cerr << "** Error : cannot set reuse sockopt failed(file server)\n";
-//		exit(-1);
-//	}
 	// Set IP & Port
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -51,7 +45,7 @@ void ReceiveFile::run()
 void ReceiveFile::waitClient()
 {
 	char buffer[BUF_SIZE];
-	char *uname;	// filename, username
+	char *uname;	// username
 	ssize_t rlen;
 	socklen_t client_addr_len;
 	client_addr_len = sizeof(client_addr);
